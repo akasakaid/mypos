@@ -1,4 +1,11 @@
 ###################
+USER ADMINISTRATOR
+###################
+email : admin@admin.com
+password : admin
+
+
+###################
 What is CodeIgniter
 ###################
 
