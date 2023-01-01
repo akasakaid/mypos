@@ -1,8 +1,3 @@
-<?php
-defined('BASEPATH') OR exit('No direct script access allowed');
-$this->load->model('Barang_model', 'barang');
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -147,7 +142,7 @@ $this->load->model('Barang_model', 'barang');
                 <div class="container-fluid">
 
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">Daftar Barang</h1>
+                    <h1 class="h3 mb-2 text-gray-800">Detail Transaksi</h1>
                     <!-- alert success dengan text 'barang berhasil di tambahkan' -->
                     <?php if ($this->session->flashdata('success')) : ?>
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -156,14 +151,15 @@ $this->load->model('Barang_model', 'barang');
                     <?php endif; ?>
                     <div class="card shadow mb-4 mt-4">
                         <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Tabel Daftar Barang</h6>
+                            <h6 class="m-0 font-weight-bold text-primary">Tabel Detail Transaksi</h6>
                             <!-- button bernama tambah barang disebelah kanan -->
-                            <a href="<?= base_url('dashboard/tambah_barang') ?>"
+                            <a href="<?= base_url('dashboard/daftar_transaksi') ?>"
                                 class="btn btn-primary btn-icon-split btn-sm float-right">
-                                <span class="icon text-white-50">
+                                <!-- <span class="icon text-white-50">
                                     <i class="fas fa-plus"></i>
-                                </span>
-                                <span class="text">Tambah Barang</span></a>
+                                </span> -->
+                                <span class="text">Kembali</span>
+                            </a>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
@@ -173,12 +169,11 @@ $this->load->model('Barang_model', 'barang');
                                             <th>No</th>
                                             <th>Kode Barang</th>
                                             <th>Nama Barang</th>
+                                            <th>jumlah</th>
                                             <th>Harga Beli</th>
                                             <th>Harga Jual</th>
-                                            <th>Total</th>
-                                            <th>Keterangan</th>
-                                            <th>Update</th>
-                                            <th>Aksi</th>
+                                            <th>subtotal</th>
+                                            <th>Tanggal Transaksi</th>
                                         </tr>
                                     </thead>
                                     <tfoot>
@@ -186,39 +181,26 @@ $this->load->model('Barang_model', 'barang');
                                             <th>No</th>
                                             <th>Kode Barang</th>
                                             <th>Nama Barang</th>
+                                            <th>jumlah</th>
                                             <th>Harga Beli</th>
                                             <th>Harga Jual</th>
-                                            <th>Total</th>
-                                            <th>Keterangan</th>
-                                            <th>Update</th>
-                                            <th>Aksi</th>
+                                            <th>subtotal</th>
+                                            <th>Tanggal Transaksi</th>
                                         </tr>
                                     </tfoot>
                                     <tbody>
-
-                                        <?php $no = 1;
-                                        // load function select from model barang
-                                        $data = $this->barang->select();
-                                        foreach ($data as $d) {
-                                            if ($d->updated_at == null){
-                                                $d->updated_at = 'Belum pernah diupdate';
-                                            }
-                                            echo '<tr>
-                                                <td>' . $no . '</td>
-                                                <td>' . $d->kode_barang . '</td>
-                                                <td>' . $d->nama_barang . '</td>
-                                                <td>' . $d->harga_beli . '</td>
-                                                <td>' . $d->harga_jual . '</td>
-                                                <td>' . $d->stok . '</td>
-                                                <td>' . $d->keterangan . '</td>
-                                                <td>' . $d->updated_at . '</td>
-                                                <td>
-                                                    <a href="' . base_url('dashboard/update_barang/' . $d->no) . '" class="btn btn-primary btn-sm">Edit</a>
-                                                    <a href="' . base_url('dashboard/delete_barang/' . $d->no) . '" class="btn btn-danger btn-sm">Delete</a></td>   
-                                            </tr>';
-                                            $no++;
-                                            # code...
-                                        }?>
+                                        <?php $no = 1; foreach ($data as $t) : ?>
+                                        <tr>
+                                            <td><?= $no++ ?></td>
+                                            <td><?= $t->kode_barang ?></td>
+                                            <td><?= $t->nama_barang ?></td>
+                                            <td><?= $t->jumlah ?></td>
+                                            <td><?= $t->harga_beli ?></td>
+                                            <td><?= $t->harga_jual ?></td>
+                                            <td><?= $t->subtotal ?></td>
+                                            <td><?= $t->created_at ?></td>
+                                        </tr>
+                                        <?php endforeach; ?>
                                     </tbody>
                                 </table>
                             </div>
@@ -226,11 +208,7 @@ $this->load->model('Barang_model', 'barang');
                     </div>
 
                 </div>
-                <!-- /.container-fluid -->
-
             </div>
-            <!-- End of Main Content -->
-
             <!-- Footer -->
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">

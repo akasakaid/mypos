@@ -1,9 +1,3 @@
-<?php
-defined('BASEPATH') OR exit('No direct script access allowed');
-date_default_timezone_set('Asia/Jakarta');
-$no_ = 0;
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -29,7 +23,9 @@ $no_ = 0;
     <!-- Custom styles for this template-->
     <link href="<?= base_url('/css/sb-admin-2.min.css')?>" rel="stylesheet">
     <link href="<?= base_url('/vendor/datatables/dataTables.bootstrap4.min.css') ?>" rel="stylesheet">
-
+    <script>
+    var no = 1;
+    </script>
 </head>
 
 <body id="page-top">
@@ -97,12 +93,7 @@ $no_ = 0;
             </div>
 
         </ul>
-        <!-- End of Sidebar -->
-
-        <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
-
-            <!-- Main Content -->
             <div id="content">
 
                 <!-- Topbar -->
@@ -144,56 +135,51 @@ $no_ = 0;
                     </ul>
                 </nav>
                 <div class="container-fluid">
-                    <form action="" method="post">
-                        <h6>Pilih Produk : </h6>
-                        <div class="table-responsive">
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>Kode Barang</th>
-                                        <th>Nama Barang</th>
-                                        <th>Stok</th>
-                                        <th>Harga</th>
-                                        <th>Jumlah</th>
-                                        <th>Subtotal</th>
-                                        <th>Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="list-item">
-                                    <tr>
-                                        <td>
-                                            <select class="form-select" name="barang" id="barang-<?= $no_ ?>">
-                                                <?php
-                                                    foreach ($data as $d ) {
-                                                        ?>
-                                                <option value="<?= $d->kode_barang ?>"
-                                                    nama_barang="<?= $d->nama_barang ?>" harga="<?= $d->harga_jual ?>"
-                                                    stok="<?= $d->total ?>">
-                                                    <?= $d->kode_barang ?>
-                                                    | <?= $d->nama_barang?>
-                                                </option>
-                                                <?php
-                                                }
-                                                ?>
-                                            </select>
-                                        </td>
-                                        <td><input class="form-control" type="text" name="nama_barang[]"
-                                                id="nama_barang-<?= $no_ ?>"></td>
-                                        <td><input type="number" class="form-control" id="stok-<?= $no_ ?>" readonly>
-                                        </td>
-                                        <td><input class="form-control" type="text" name="harga[]"
-                                                id="harga-<?= $no_ ?>"></td>
-                                        <td><input class="form-control" type="text" name="jumlah[]"
-                                                id="jumlah-<?= $no_ ?>"></td>
-                                        <td><input class="form-control" type="text" name="subtotal[]"
-                                                id="subtotal-<?= $no_ ?>">
-                                        </td>
-                                        <td><button class="btn btn-primary mt-3" id="add">Tambah</button></td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                    <div class="card shadow">
+                        <div class="card-title ml-3 mt-3">
+                            <h5 class="text-black">Pilih Produk : </h5>
                         </div>
-                    </form>
+                        <div class="card-body">
+                            <form id="form-tambah" action="<?= base_url('/dashboard/transaksi') ?>" method="POST">
+                                <button type="submit" class="btn btn-primary float-right mb-3">Submit</button>
+
+                                <div class="table-responsive">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Kode Barang</th>
+                                                <th>Nama Barang</th>
+                                                <th>Stok</th>
+                                                <th>Harga</th>
+                                                <th>Jumlah</th>
+                                                <th>Subtotal</th>
+                                                <th>Aksi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="list-item">
+                                            <tr>
+                                                <td>
+                                                    <select class="form-select" name="barang[]" id="barang-0">
+                                                    </select>
+                                                </td>
+                                                <td><input class="form-control" type="text" name="nama_barang[]"
+                                                        id="nama_barang-0" required readonly></td>
+                                                <td><input type="number" class="form-control" id="stok-0" readonly></td>
+                                                <td><input class="form-control" type="text" name="harga[]" id="harga-0"
+                                                        required readonly></td>
+                                                <td><input class="form-control" type="text" name="jumlah[]"
+                                                        id="jumlah-0" required></td>
+                                                <td><input class="form-control" type="text" name="subtotal[]"
+                                                        id="subtotal-0" required readonly></td>
+                                                <td><button class="btn btn-primary mt-3" id="add">Tambah</button></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
                 </div>
             </div>
             <!-- Footer -->
@@ -204,15 +190,8 @@ $no_ = 0;
                     </div>
                 </div>
             </footer>
-            <!-- End of Footer -->
-
         </div>
-        <!-- End of Content Wrapper -->
-
     </div>
-    <!-- End of Page Wrapper -->
-
-    <!-- Scroll to Top Button-->
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
     </a>
@@ -259,66 +238,130 @@ $no_ = 0;
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <script>
-    $('#barang-<?= $no_ ?>').select2();
+    let selected_barang = {};
+    const data_barang = <?= json_encode($data); ?>
 
-    $("#barang-<?= $no_ ?>").on("change", function() {
+    function fill_barang(no) {
+        let x;
+        let html_str = "<option></option>";
+        let dom_barang = $("#barang-" + no + " option:selected");
+        var kode_barang = dom_barang.attr("kode_barang");
 
-        var nama = $("#barang-<?= $no_ ?> option:selected").attr("nama_barang");
-        var harga = $("#barang-<?= $no_ ?> option:selected").attr("harga_jual");
-        var stok = $("#barang-<?= $no_ ?> option:selected").attr("stok");
-        var harga = $("#barang-<?= $no_ ?> option:selected").attr("harga");
-        // var grosir = $("#barang option:selected").attr("grosir");
-        // var min = $("#barang option:selected").attr("min");
+        for (x in data_barang) {
+            let y = data_barang[x];
+            let selected_attribute = "";
+            if (y.stok <= 0) {
+                continue;
+            }
+            if (y.kode_barang == kode_barang) {
+                console.log("ykb", y.kode_barang);
+                console.log("kb", kode_barang);
+                selected_attribute = " selected";
+            } else if (y.kode_barang in selected_barang) {
+                continue;
+            }
 
-        $("#nama_barang-<?= $no_ ?>").val(nama);
-        $("#hargal-<?= $no_ ?>").val(harga);
-        $("#stok-<?= $no_ ?>").val(stok);
-        $("#harga-<?= $no_ ?>").val(harga);
-        $("#subtotal-<?= $no_ ?>").val(0);
-    });
-    // function javascript
+            html_str += `<option value = "${y.kode_barang}"
+                nama_barang = "${y.nama_barang}"
+                harga = "${y.harga_jual}"
+                stok = "${y.stok}" 
+                kode_barang = "${y.kode_barang}"${selected_attribute}> ${y.kode_barang} | ${y.nama_barang} </option>`;
+        }
+        $("#barang-" + no).html(html_str);
+    }
+
+    function install_listener(no) {
+        // console.log("install listener no = " + no);
+        fill_barang(no);
+        $('#barang-' + no).select2();
+
+        // jquery event on change with selector name is jumlah
+        $("#jumlah-" + no).on("change", function() {
+            var stok = parseInt($("#stok-" + no).val());
+            var jumlah = parseInt($("#jumlah-" + no).val());
+            var harga = parseInt($("#harga-" + no).val());
+            if (jumlah > stok) {
+                alert("Stok tidak mencukupi");
+                $("#jumlah-" + no).val(0);
+                $("#subtotal-" + no).val(0);
+            } else if (jumlah <= 0) {
+                alert("Jumlah minimal 1");
+            } else {
+                var subtotal = jumlah * harga;
+                $("#subtotal-" + no).val(subtotal);
+            }
+        });
+
+        $("#barang-" + no).on("change", function() {
+            let dom_barang = $("#barang-" + no + " option:selected");
+            var nama = dom_barang.attr("nama_barang");
+            var harga = dom_barang.attr("harga_jual");
+            var stok = dom_barang.attr("stok");
+            var harga = dom_barang.attr("harga");
+            var kode_barang = dom_barang.attr("kode_barang");
+            // var grosir = dom_barang.attr("grosir");
+            // var min = dom_barang.attr("min");
+
+            selected_barang[kode_barang] = 1;
+            $("#nama_barang-" + no).val(nama);
+            $("#harga-" + no).val(harga);
+            $("#stok-" + no).val(stok);
+            $("#harga-" + no).val(harga);
+            $("#subtotal-" + no).val(0);
+            refresh_barang();
+        });
+    }
+    install_listener(0);
+
+    function refresh_barang() {
+        let i;
+        for (i = 0; i < no; i++) {
+            fill_barang(i);
+        }
+    }
+
     $(document).ready(function() {
         $('#add').click(function(e) {
             e.preventDefault();
-            <?php $no_++; ?>
-            $('#list-item').append(`                                    <tr>
-                                        <td>
-                                            <select class="form-select" name="barang" id="barang-<?= $no_ ?>">
-                                                <?php
-                                                    foreach ($data as $d ) {
-                                                        ?>
-                                                <option value="<?= $d->kode_barang ?>"
-                                                    nama_barang="<?= $d->nama_barang ?>" harga="<?= $d->harga_jual ?>"
-                                                    stok="<?= $d->total ?>">
-                                                    <?= $d->kode_barang ?>
-                                                    | <?= $d->nama_barang?>
-                                                </option>
-                                                <?php
-                                                }
-                                                ?>
-                                            </select>
-                                        </td>
-                                        <td><input class="form-control" type="text" name="nama_barang[]"
-                                                id="nama_barang-<?= $no_ ?>"></td>
-                                        <td><input type="number" class="form-control" id="stok-<?= $no_ ?>" readonly>
-                                        </td>
-                                        <td><input class="form-control" type="text" name="harga[]"
-                                                id="harga-<?= $no_ ?>"></td>
-                                        <td><input class="form-control" type="text" name="jumlah[]"
-                                                id="jumlah-<?= $no_ ?>"></td>
-                                        <td><input class="form-control" type="text" name="subtotal[]"
-                                                id="subtotal-<?= $no_ ?>">
-                                        </td>
-                                        <td><button class="btn btn-danger mt-3" id="btn-hapus">Hapus</button></td>
-                                    </tr>`);
+            $('#list-item').append(`<tr>
+                                                <td>
+                                                    <select class="form-select" name="barang[]" id="barang-${no}">
+                                                    </select>
+                                                </td>
+                                                <td><input class="form-control" type="text" name="nama_barang[]"
+                                                        id="nama_barang-${no}" required readonly></td>
+                                                <td><input type="number" class="form-control" id="stok-${no}" readonly></td>
+                                                <td><input class="form-control" type="text" name="harga[]" id="harga-${no}"
+                                                        required readonly></td>
+                                                <td><input class="form-control" type="text" name="jumlah[]" id="jumlah-${no}"
+                                                        required></td>
+                                                <td><input class="form-control" type="text" name="subtotal[]"
+                                                        id="subtotal-${no}" required readonly></td>
+                                                <td><button class="btn btn-danger mt-3" id="btn-hapus-${no}">Hapus</button></td>
+                                            </tr>`);
+
+            install_listener(no);
+            $("#btn-hapus-" + no).click(function(e) {
+                refresh_barang();
+                // console.log("test");
+                let dom_barang = $("#barang-" + no + " option:selected");
+                var kode_barang = dom_barang.attr("kode_barang");
+                delete selected_barang[kode_barang];
+                no--;
+                e.preventDefault();
+                let row_item = $(this).parent().parent();
+                $(row_item).remove();
+            });
+            no++;
         });
-        $(document).on('click', '#btn-hapus', function(e) {
-            e.preventDefault();
-            <?php $no_-- ?>
-            let row_item = $(this).parent().parent();
-            $(row_item).remove();
-        });
+
+        // $(document).on('click', '#btn-hapus', function(e) {
+        //     e.preventDefault();
+        //     let row_item = $(this).parent().parent();
+        //     $(row_item).remove();
+        // });
     });
+    // function javascript
     </script>
 </body>
 

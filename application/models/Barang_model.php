@@ -11,6 +11,13 @@ class Barang_model extends CI_Model
         return $this->db->get()->result();
     }
 
+    public function subtract_stok($kode_barang,$jumlah)
+    {
+        $this->db->where('kode_barang',$kode_barang);
+        $this->db->set('stok', 'stok-'.$jumlah, false);
+        $this->db->update('barang');
+    }
+
     public function update($id,$data)
     {
         $this->db->select('*');

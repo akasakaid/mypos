@@ -110,12 +110,84 @@ class Dashboard extends CI_Controller {
         }
     }
 
+
     public function transaksi(){
         $this->_verifikasi();
+        $this->load->model('barang_model','barang');
+        $this->load->model('transaksi_model','transaksi');
         if ($this->input->method() == 'get'){
-            $this->load->model('barang_model','barang');
-            $data = ['data' => $this->barang->select()];
+            
+            $data = [
+                'data' => $this->barang->select(),
+            ];
             $this->load->view('dashboard/transaksi',$data);
+
+        } elseif ($this->input->method() == 'post'){
+            $this->db->trans_start();
+            $id = $this->transaksi->create_transaksi();
+            $barang = $this->input->post('barang');
+            $nama_barang = $this->input->post('nama_barang');
+            $harga_jual = $this->input->post('harga');
+            $jumlah = $this->input->post('jumlah');
+            $subtotal = $this->input->post('subtotal');
+            // $data = [
+            //     'id' => $id,
+            //     'kode_barang' => $barang,
+            //     'nama_barang' => $nama_barang,
+            //     'harga_jual' => $harga_jual,
+            //     'jumlah' => $jumlah,
+            //     'subtotal' => $subtotal,
+            //     'created_at' => date('Y-m-d H:i:s')
+            // ];
+
+            $total_harga_jual = 0;
+            $total_harga_beli = 0;
+            // ACID
+            
+            foreach ($barang as $key => $kode_barang) {
+                if ($jumlah[$key] <= 0) {
+                    echo "<script>alert('Jumlah minimal 1');window.location = '';</script>";
+                    return;
+                }
+                $harga = $this->transaksi->get_harga($kode_barang);
+                $subtotal = $harga->harga_jual * (int)$jumlah[$key];
+                $total_harga_jual += $subtotal;
+                $total_harga_beli += $harga->harga_beli * (int)$jumlah[$key];
+                $data = [
+                    'id_transaksi' => $id,
+                    'kode_barang' => $kode_barang,
+                    'jumlah' => $jumlah[$key],
+                    'subtotal' => $subtotal,
+                    'created_at' => date('Y-m-d H:i:s')
+                ];
+                $this->barang->subtract_stok($kode_barang, $jumlah[$key]);
+                $this->transaksi->insert_barang($data);
+            }
+
+            $keuntungan = $total_harga_jual - $total_harga_beli;
+            $this->transaksi->update_total_dan_keuntungan($id, $total_harga_jual, $keuntungan);
+            $this->db->trans_complete();
+            redirect(base_url('dashboard/daftar_transaksi'));
+        }
+    }
+
+    public function daftar_transaksi(){
+        $this->_verifikasi();
+        if ($this->input->method() == 'get'){
+            // $this->load->model('barang_model','barang');
+            $this->load->model('transaksi_model','transaksi');
+            $data = ['data' => $this->transaksi->select()];
+            $this->load->view('dashboard/daftar_transaksi',$data);
+        }
+    }
+
+    public function detail_transaksi($id){
+        $this->_verifikasi();
+        if ($this->input->method() == 'get'){
+            $id = $this->uri->segment(3);
+            $this->load->model('transaksi_model','transaksi');
+            $data = ['data' => $this->transaksi->get_barang_transaksi($id)];
+            $this->load->view('dashboard/detail_transaksi',$data);
         }
     }
 }
