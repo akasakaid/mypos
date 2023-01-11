@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-
+    <link rel="icon" href="<?= base_url("assets/icon.ico") ?>" type="image/ico">
     <title>Dashboard - Admin</title>
 
     <!-- Custom fonts for this template-->
@@ -25,14 +25,14 @@
     <link href="<?= base_url('/vendor/datatables/dataTables.bootstrap4.min.css') ?>" rel="stylesheet">
     <script>
     var no = 1;
+    var total_pembelian = 0;
+    var list_pembelian = [];
     </script>
 </head>
 
 <body id="page-top">
-
     <!-- Page Wrapper -->
     <div id="wrapper">
-
         <!-- Sidebar -->
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
@@ -42,7 +42,7 @@
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fas fa-laugh-wink"></i>
                 </div>
-                <div class="sidebar-brand-text mx-3">SB Admin <sup>2</sup></div>
+                <div class="sidebar-brand-text mx-3">MyPOS</div>
             </a>
 
             <!-- Divider -->
@@ -50,7 +50,7 @@
 
             <!-- Nav Item - Dashboard -->
             <li class="nav-item">
-                <a class="nav-link" href="<?= base_url('/dashboard') ?>">
+                <a class="nav-link" href="<?= base_url('/dashboard')?>">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>
             </li>
@@ -59,9 +59,7 @@
             <li class="nav-item">
                 <a class="nav-link" href="<?= base_url('/dashboard/barang')?>" data-target="#collapseTwo"
                     aria-expanded="true">
-                    <!-- <i class="fas fa-fw fa-cog"></i> -->
-                    <!-- icon bootstrap untuk barang -->
-                    <i class="fas fa-fw fa-box"></i>
+                    <i class="fas fa-fw fa-cog"></i>
                     <span>Barang</span>
                 </a>
             </li>
@@ -84,6 +82,13 @@
                 </div>
             </li>
 
+            <li class="nav-item">
+                <a class="nav-link" href="<?= base_url('/dashboard/user')?>" data-target="#collapseTwo"
+                    aria-expanded="true">
+                    <i class="fas fa-user"></i>
+                    <span>User</span>
+                </a>
+            </li>
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">
 
@@ -95,15 +100,12 @@
         </ul>
         <div id="content-wrapper" class="d-flex flex-column">
             <div id="content">
-
                 <!-- Topbar -->
                 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-
                     <!-- Sidebar Toggle (Topbar) -->
                     <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
                         <i class="fa fa-bars"></i>
                     </button>
-
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
 
@@ -120,7 +122,7 @@
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                 aria-labelledby="userDropdown">
-                                <a class="dropdown-item" href="#">
+                                <a class="dropdown-item" href="<?= base_url('dashboard/profile') ?>">
                                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Profile
                                 </a>
@@ -140,14 +142,13 @@
                             <h5 class="text-black">Pilih Produk : </h5>
                         </div>
                         <div class="card-body">
-                            <form id="form-tambah" action="<?= base_url('/dashboard/transaksi') ?>" method="POST">
+                            <form id="form-tambah" action="<?= base_url('/dashboard/pembayaran') ?>" method="POST">
                                 <button type="submit" class="btn btn-primary float-right mb-3">Submit</button>
-
                                 <div class="table-responsive">
                                     <table class="table table-bordered">
                                         <thead>
                                             <tr>
-                                                <th>Kode Barang</th>
+                                                <th width="30%">Kode Barang</th>
                                                 <th>Nama Barang</th>
                                                 <th>Stok</th>
                                                 <th>Harga</th>
@@ -177,7 +178,6 @@
                                     </table>
                                 </div>
                             </form>
-
                         </div>
                     </div>
                 </div>
@@ -254,8 +254,6 @@
                 continue;
             }
             if (y.kode_barang == kode_barang) {
-                console.log("ykb", y.kode_barang);
-                console.log("kb", kode_barang);
                 selected_attribute = " selected";
             } else if (y.kode_barang in selected_barang) {
                 continue;
@@ -324,24 +322,25 @@
         $('#add').click(function(e) {
             e.preventDefault();
             $('#list-item').append(`<tr>
-                                                <td>
-                                                    <select class="form-select" name="barang[]" id="barang-${no}">
-                                                    </select>
-                                                </td>
-                                                <td><input class="form-control" type="text" name="nama_barang[]"
-                                                        id="nama_barang-${no}" required readonly></td>
-                                                <td><input type="number" class="form-control" id="stok-${no}" readonly></td>
-                                                <td><input class="form-control" type="text" name="harga[]" id="harga-${no}"
-                                                        required readonly></td>
-                                                <td><input class="form-control" type="text" name="jumlah[]" id="jumlah-${no}"
-                                                        required></td>
-                                                <td><input class="form-control" type="text" name="subtotal[]"
-                                                        id="subtotal-${no}" required readonly></td>
-                                                <td><button class="btn btn-danger mt-3" id="btn-hapus-${no}">Hapus</button></td>
-                                            </tr>`);
+                                        <td>
+                                            <select class="form-select" name="barang[]" id="barang-${no}">
+                                            </select>
+                                        </td>
+                                        <td><input class="form-control" type="text" name="nama_barang[]"
+                                                id="nama_barang-${no}" required readonly></td>
+                                        <td><input type="number" class="form-control" id="stok-${no}" readonly></td>
+                                        <td><input class="form-control" type="text" name="harga[]" id="harga-${no}"
+                                                required readonly></td>
+                                        <td><input class="form-control" type="text" name="jumlah[]" id="jumlah-${no}"
+                                                required></td>
+                                        <td><input class="form-control" type="text" name="subtotal[]"
+                                                id="subtotal-${no}" required readonly></td>
+                                        <td><button class="btn btn-danger mt-3" id="btn-hapus-${no}">Hapus</button></td>
+                                    </tr>`);
 
             install_listener(no);
             $("#btn-hapus-" + no).click(function(e) {
+                console.log("button hapus no = " + no + "di klik");
                 refresh_barang();
                 // console.log("test");
                 let dom_barang = $("#barang-" + no + " option:selected");

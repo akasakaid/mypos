@@ -1,34 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <title>Dashboard - Admin</title>
-
-    <!-- Custom fonts for this template-->
-    <link href="<?= base_url('/vendor/fontawesome-free/css/all.min.css')?>" rel="stylesheet" type="text/css">
-    <link
-        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-        rel="stylesheet">
-
-    <!-- Custom styles for this template-->
-    <link href="<?= base_url('/css/sb-admin-2.min.css')?>" rel="stylesheet">
-    <link href="<?= base_url('/vendor/datatables/dataTables.bootstrap4.min.css') ?>" rel="stylesheet">
-
-</head>
-
 <body id="page-top">
 
     <!-- Page Wrapper -->
     <div id="wrapper">
 
-        <!-- Sidebar -->
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
@@ -37,7 +11,7 @@
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fas fa-laugh-wink"></i>
                 </div>
-                <div class="sidebar-brand-text mx-3">SB Admin <sup>2</sup></div>
+                <div class="sidebar-brand-text mx-3">MyPOS</div>
             </a>
 
             <!-- Divider -->
@@ -45,18 +19,16 @@
 
             <!-- Nav Item - Dashboard -->
             <li class="nav-item">
-                <a class="nav-link" href="<?= base_url('/dashboard') ?>">
+                <a class="nav-link" href="<?= base_url('/dashboard')?>">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>
             </li>
 
             <!-- Nav Item - Pages Collapse Menu -->
-            <li class="nav-item active">
+            <li class="nav-item">
                 <a class="nav-link" href="<?= base_url('/dashboard/barang')?>" data-target="#collapseTwo"
                     aria-expanded="true">
-                    <!-- <i class="fas fa-fw fa-cog"></i> -->
-                    <!-- icon bootstrap untuk barang -->
-                    <i class="fas fa-fw fa-box"></i>
+                    <i class="fas fa-fw fa-cog"></i>
                     <span>Barang</span>
                 </a>
             </li>
@@ -79,6 +51,13 @@
                 </div>
             </li>
 
+            <li class="nav-item">
+                <a class="nav-link" href="<?= base_url('/dashboard/user')?>" data-target="#collapseTwo"
+                    aria-expanded="true">
+                    <i class="fas fa-user"></i>
+                    <span>User</span>
+                </a>
+            </li>
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">
 
@@ -120,7 +99,7 @@
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                 aria-labelledby="userDropdown">
-                                <a class="dropdown-item" href="#">
+                                <a class="dropdown-item" href="<?= base_url('dashboard/profile') ?>">
                                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Profile
                                 </a>
@@ -154,7 +133,7 @@
                             <h6 class="m-0 font-weight-bold text-primary">Tabel Detail Transaksi</h6>
                             <!-- button bernama tambah barang disebelah kanan -->
                             <a href="<?= base_url('dashboard/daftar_transaksi') ?>"
-                                class="btn btn-primary btn-icon-split btn-sm float-right">
+                                class="btn btn-primary btn-icon-split float-right">
                                 <!-- <span class="icon text-white-50">
                                     <i class="fas fa-plus"></i>
                                 </span> -->

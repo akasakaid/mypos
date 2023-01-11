@@ -1,8 +1,3 @@
-<?php
-defined('BASEPATH') OR exit('No direct script access allowed');
-$this->load->model('Barang_model', 'barang');
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -42,7 +37,7 @@ $this->load->model('Barang_model', 'barang');
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fas fa-laugh-wink"></i>
                 </div>
-                <div class="sidebar-brand-text mx-3">SB Admin <sup>2</sup></div>
+                <div class="sidebar-brand-text mx-3">MyPOS</div>
             </a>
 
             <!-- Divider -->
@@ -50,18 +45,16 @@ $this->load->model('Barang_model', 'barang');
 
             <!-- Nav Item - Dashboard -->
             <li class="nav-item">
-                <a class="nav-link" href="<?= base_url('/dashboard') ?>">
+                <a class="nav-link" href="<?= base_url('/dashboard')?>">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>
             </li>
 
             <!-- Nav Item - Pages Collapse Menu -->
-            <li class="nav-item active">
+            <li class="nav-item">
                 <a class="nav-link" href="<?= base_url('/dashboard/barang')?>" data-target="#collapseTwo"
                     aria-expanded="true">
-                    <!-- <i class="fas fa-fw fa-cog"></i> -->
-                    <!-- icon bootstrap untuk barang -->
-                    <i class="fas fa-fw fa-box"></i>
+                    <i class="fas fa-fw fa-cog"></i>
                     <span>Barang</span>
                 </a>
             </li>
@@ -84,6 +77,13 @@ $this->load->model('Barang_model', 'barang');
                 </div>
             </li>
 
+            <li class="nav-item">
+                <a class="nav-link" href="<?= base_url('/dashboard/user')?>" data-target="#collapseTwo"
+                    aria-expanded="true">
+                    <i class="fas fa-user"></i>
+                    <span>User</span>
+                </a>
+            </li>
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">
 
@@ -125,7 +125,7 @@ $this->load->model('Barang_model', 'barang');
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                 aria-labelledby="userDropdown">
-                                <a class="dropdown-item" href="#">
+                                <a class="dropdown-item" href="<?= base_url('dashboard/profile') ?>">
                                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Profile
                                 </a>
@@ -179,9 +179,9 @@ $this->load->model('Barang_model', 'barang');
                                     <input type="number" class="form-control" value="<?= $data['harga_jual'] ?>"
                                         id="harga_jual" name="harga_jual" required>
                                     <div class="mt-3"></div>
-                                    <label for="total">Total</label>
-                                    <input type="number" class="form-control" value="<?= $data['total']?>" id="total"
-                                        name="total" required>
+                                    <label for="total">Stok</label>
+                                    <input type="number" class="form-control" value="<?= $data['stok']?>" id="total"
+                                        name="stok" required>
                                     <div class="mt-3"></div>
                                     <label for="keterangan">Keterangan</label>
                                     <input type="text" class="form-control" value="<?= $data['keterangan']?>"
@@ -210,8 +210,8 @@ $this->load->model('Barang_model', 'barang');
                                     <input type="number" class="form-control" id="harga_beli" name="harga_jual"
                                         required>
                                     <div class="mt-3"></div>
-                                    <label for="total">Total</label>
-                                    <input type="number" class="form-control" id="total" name="total" required>
+                                    <label for="stok">Stok</label>
+                                    <input type="number" class="form-control" id="stok" name="stok" required>
                                     <div class="mt-3"></div>
                                     <label for="keterangan">Keterangan</label>
                                     <input type="text" class="form-control" id="keterangan" name="keterangan">

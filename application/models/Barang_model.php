@@ -3,11 +3,19 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         
 class Barang_model extends CI_Model 
 {
-    public function select()
+    public function select($limit=null,$urutan="ASC",$stok=null)
     {
-        $this->db->select('*');
-        $this->db->from('barang');
-        $this->db->order_by('no','ASC');
+        if ($limit == null && $stok == null){
+            $this->db->select('*');
+            $this->db->from('barang');
+            $this->db->order_by('no','ASC');
+        } else if ($limit != null && $stok != null) {
+            $this->db->select('*');
+            $this->db->from('barang');
+            $this->db->where('stok <',$stok);
+            $this->db->order_by('created_at',$urutan);
+            $this->db->limit($limit);
+        }
         return $this->db->get()->result();
     }
 
@@ -24,8 +32,8 @@ class Barang_model extends CI_Model
         $this->db->from('barang');
         $this->db->where('kode_barang',$data['kode_barang']);
         $this->db->where('no',$id);
-        $this->db->update('barang',$data);
-        return true;
+        $res = $this->db->update('barang',$data);
+        return $res;
         // $cek = $this->db->get()->num_rows();
         // print_r($cek);
         // if ($cek > 0) {
@@ -35,6 +43,26 @@ class Barang_model extends CI_Model
         //     $this->db->update('barang',$data);
         //     return true;
         // }
+    }
+
+    public function delete($id)
+    {
+        $this->db->where('no',$id);
+        $this->db->delete('barang');
+    }
+
+    public function get_stok($kode_barang){
+        $this->db->select('stok');
+        $this->db->from('barang');
+        $this->db->where('kode_barang',$kode_barang);
+        return $this->db->get()->row();
+    }
+
+    public function update_stok($kode_barang,$stok){
+        $this->db->where('kode_barang',$kode_barang);
+        $this->db->update('barang',[
+            'stok' => $stok
+        ]);
     }
 
     // create method function name select_by_id

@@ -46,19 +46,23 @@ class Auth extends CI_Controller {
             $this->load->view('auth/login');
         }
         elseif ($metod == 'POST') {
+			$this->load->model('User_model','user');
             $email = $this->input->post('email',true);
             $password = $this->input->post('password',true);
             $password_hash = password_hash($password,PASSWORD_DEFAULT);
-			$query = $this->db->query("SELECT `username`,`email`,`password` FROM `users` WHERE `email` = '$email' LIMIT 1")->result();
+			$query = $this->user->select($email);
 			if (count($query) == 1){
-				echo "login success";
 				$verify = password_verify($password,$query[0]->password);
 				if ($verify){
 					$data = [
 						'username' => $query[0]->username,
 						'email' => $query[0]->email,
-						'is_login' => true
+						'level' => $query[0]->level,
+						'is_login' => true,
+						'passsword' => $query[0]->password
 					];
+					// echo json_encode($data);
+					// return
 					$this->session->set_userdata($data);
 					redirect(base_url('/dashboard'));
 				}else {
